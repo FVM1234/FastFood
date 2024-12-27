@@ -93,10 +93,30 @@ document.getElementById('submit-order').addEventListener('click', () => {
         alert('El carrito está vacío. Agrega productos antes de enviar.');
         return;
     }
-    alert('Pedido enviado con éxito. Gracias por tu compra.');
+
+    // Generar el mensaje con el detalle del pedido
+    let message = 'Hola, quiero realizar un pedido:\n';
+    cart.forEach(item => {
+        message += `- ${item.quantity} x ${item.name} (S/ ${(item.price * item.quantity).toFixed(2)})\n`;
+    });
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    message += `\nTotal: S/ ${total.toFixed(2)}`;
+
+    // Reemplazar espacios por %20 y saltos de línea por %0A para la URL
+    const encodedMessage = encodeURIComponent(message);
+
+    // Número de WhatsApp del restaurante
+    const phoneNumber = '51949957513'; // Cambia este número al del restaurante
+    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+    // Abrir el enlace en una nueva ventana
+    window.open(whatsappURL, '_blank');
+
+    // Reiniciar el carrito
     cart.length = 0;
     updateCart();
 });
+
 
 function cancelOrder() {
     if (confirm('¿Estás seguro de que deseas cancelar el pedido?')) {
@@ -104,5 +124,4 @@ function cancelOrder() {
         updateCart();
     }
 }
-
 renderProducts();
